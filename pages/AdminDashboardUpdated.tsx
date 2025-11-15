@@ -8,8 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import AdminJobForm from '../components/admin/AdminJobForm';
-import SimpleAdminScholarshipForm from '../components/admin/SimpleAdminScholarshipForm';
-import SimpleAdminEventForm from '../components/admin/SimpleAdminEventForm';
 import BulkJobUpload from '../components/admin/BulkJobUpload';
 import { 
   Users, 
@@ -84,28 +82,6 @@ export default function AdminDashboard() {
     setShowJobForm(true);
   };
 
-  const handleDeleteJob = async (jobId: number) => {
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      try {
-        await apiClient.jobs.delete(jobId);
-        alert('Job deleted successfully');
-        refetchJobs();
-      } catch (error) {
-        console.error('Error deleting job:', error);
-        alert('Failed to delete job. Please try again.');
-      }
-    }
-  };
-
-  const handleJobFormClose = () => {
-    setShowJobForm(false);
-    setEditingJob(null);
-  };
-
-  const handleJobFormSuccess = () => {
-    refetchJobs();
-  };
-
   const handleEditScholarship = (scholarship: Scholarship) => {
     setEditingScholarship(scholarship);
     setShowScholarshipForm(true);
@@ -114,6 +90,17 @@ export default function AdminDashboard() {
   const handleEditEvent = (event: Event) => {
     setEditingEvent(event);
     setShowEventForm(true);
+  };
+
+  const handleDeleteJob = async (id: number) => {
+    if (window.confirm('Are you sure you want to delete this job?')) {
+      try {
+        await apiClient.jobs.delete(id);
+        refetchJobs();
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
+    }
   };
 
   const handleDeleteScholarship = async (id: number) => {
@@ -138,6 +125,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleJobFormClose = () => {
+    setShowJobForm(false);
+    setEditingJob(null);
+  };
+
   const handleScholarshipFormClose = () => {
     setShowScholarshipForm(false);
     setEditingScholarship(null);
@@ -146,6 +138,10 @@ export default function AdminDashboard() {
   const handleEventFormClose = () => {
     setShowEventForm(false);
     setEditingEvent(null);
+  };
+
+  const handleJobFormSuccess = () => {
+    refetchJobs();
   };
 
   const handleScholarshipFormSuccess = () => {
@@ -165,25 +161,25 @@ export default function AdminDashboard() {
       description: `${stats?.overview?.jobs?.active || 0} active`,
     },
     {
-      title: 'Total Companies',
-      value: stats?.overview?.companies?.total || 0,
-      icon: Building2,
-      color: 'from-green-600 to-emerald-600',
-      description: 'Registered companies',
+      title: 'Scholarships',
+      value: recentScholarships?.pagination?.total || 0,
+      icon: GraduationCap,
+      color: 'from-green-600 to-blue-600',
+      description: `${(recentScholarships?.scholarships?.filter((s: any) => s.isFeatured)?.length || 0)} featured`,
+    },
+    {
+      title: 'Events',
+      value: recentEvents?.pagination?.total || 0,
+      icon: CalendarEvent,
+      color: 'from-purple-600 to-pink-600',
+      description: `${(recentEvents?.events?.filter((e: any) => e.isFeatured)?.length || 0)} featured`,
     },
     {
       title: 'Total Users',
       value: stats?.overview?.users?.total || 0,
       icon: Users,
-      color: 'from-purple-600 to-pink-600',
-      description: `${stats?.overview?.users?.admins || 0} admins`,
-    },
-    {
-      title: 'This Month',
-      value: stats?.overview?.jobs?.thisMonth || 0,
-      icon: TrendingUp,
       color: 'from-orange-600 to-red-600',
-      description: 'New jobs posted',
+      description: `${stats?.overview?.users?.admins || 0} admins`,
     },
   ];
 
@@ -205,7 +201,7 @@ export default function AdminDashboard() {
             <p className={`mt-2 text-base ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
             }`}>
-              Welcome back, <span className="font-semibold">{user?.name || 'Admin'}</span> • Manage jobs and content
+              Welcome back, <span className="font-semibold">{user?.name || 'Admin'}</span> • Manage opportunities and content
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -307,6 +303,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
+          {/* Jobs Tab */}
           <TabsContent value="jobs" className="space-y-6">
             <Card className={`${
               theme === 'dark' 
@@ -416,6 +413,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {/* Scholarships Tab */}
           <TabsContent value="scholarships" className="space-y-6">
             <Card className={`${
               theme === 'dark' 
@@ -519,6 +517,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {/* Events Tab */}
           <TabsContent value="events" className="space-y-6">
             <Card className={`${
               theme === 'dark' 
@@ -689,21 +688,22 @@ export default function AdminDashboard() {
         onSuccess={handleJobFormSuccess}
       />
 
-      {/* Scholarship Form Modal */}
-      <SimpleAdminScholarshipForm 
+      {/* Note: Scholarship and Event forms would be added here when created with correct interfaces */}
+      {/* 
+      <AdminScholarshipForm 
         open={showScholarshipForm} 
         onOpenChange={handleScholarshipFormClose}
         scholarship={editingScholarship}
         onSuccess={handleScholarshipFormSuccess}
       />
 
-      {/* Event Form Modal */}
-      <SimpleAdminEventForm
+      <AdminEventForm
         open={showEventForm}
         onOpenChange={handleEventFormClose}
         event={editingEvent}
         onSuccess={handleEventFormSuccess}
       />
+      */}
     </div>
   );
 }

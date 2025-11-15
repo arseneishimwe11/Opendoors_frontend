@@ -4,6 +4,8 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import JobsPage from './pages/JobsPage';
 import InternshipsPage from './pages/InternshipsPage';
+import ScholarshipsPage from './pages/ScholarshipsPage';
+import EventsPage from './pages/EventsPage';
 import CompaniesPage from './pages/CompaniesPage';
 import SavedJobsPage from './pages/SavedJobsPage';
 import JobDetailPage from './pages/JobDetailPage';
@@ -80,6 +82,8 @@ export default function AppInner() {
               <Route path="/jobs" element={<JobsPage />} />
               <Route path="/jobs/:id" element={<JobDetailPage />} />
               <Route path="/internships" element={<InternshipsPage />} />
+              <Route path="/scholarships" element={<ScholarshipsPage />} />
+              <Route path="/events" element={<EventsPage />} />
               <Route path="/companies" element={<CompaniesPage />} />
               <Route path="/saved" element={<SavedJobsPage />} />
               

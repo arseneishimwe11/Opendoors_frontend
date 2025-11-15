@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Moon, Sun, Briefcase, Home, Building, GraduationCap, Menu, X, Heart } from 'lucide-react';
+import { Moon, Sun, Briefcase, Home, Building, GraduationCap, Menu, X, Heart, BookOpen, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useTheme } from '../contexts/ThemeContext';
@@ -17,7 +17,9 @@ export default function Header() {
     { name: 'Home', href: '/', icon: Home, badge: undefined, highlight: false },
     { name: 'Jobs', href: '/jobs', icon: Briefcase, badge: undefined, highlight: false },
     { name: 'Internships', href: '/internships', icon: GraduationCap, badge: undefined, highlight: false },
-    { name: 'Companies', href: '/companies', icon: Building, badge: undefined, highlight: false },
+    { name: 'Scholarships', href: '/scholarships', icon: BookOpen, badge: undefined, highlight: false },
+    { name: 'Events', href: '/events', icon: Calendar, badge: undefined, highlight: false },
+    // { name: 'Companies', href: '/companies', icon: Building, badge: undefined, highlight: false },
     { name: 'Saved', href: '/saved', icon: Heart, badge: undefined, highlight: false },
   ];
 
@@ -58,7 +60,7 @@ export default function Header() {
                 <p className={`text-xs font-medium leading-none ${
                   theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
                 }`}>
-                  Rwanda's Job Platform
+                  Rwanda's Opportunity Platform
                 </p>
               </div>
             </Link>

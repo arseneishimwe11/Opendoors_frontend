@@ -60,7 +60,7 @@ export default function Header() {
                 <p className={`text-xs font-medium leading-none ${
                   theme === 'dark' ? 'text-blue-300' : 'text-blue-600'
                 }`}>
-                  Rwanda's Job Platform
+                  Rwanda's Opportunity Platform
                 </p>
               </div>
             </Link>

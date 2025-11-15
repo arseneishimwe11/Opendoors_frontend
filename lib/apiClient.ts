@@ -51,6 +51,83 @@ interface User {
   isPro: boolean;
 }
 
+interface Scholarship {
+  id: number;
+  title: string;
+  organization: string;
+  location: string;
+  description?: string;
+  requirements?: string;
+  link?: string;
+  
+  // Image fields
+  banner_image?: string;
+  logo_image?: string;
+  image_alt?: string;
+  
+  // Scholarship-specific fields
+  degree_level: string;
+  field_of_study?: string;
+  funding_type: string;
+  funding_amount?: string;
+  
+  // Common fields
+  deadline?: string;
+  duration?: string;
+  eligibility?: string;
+  benefits?: string;
+  
+  // System fields
+  category: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  
+  // Computed fields
+  is_saved?: boolean;
+}
+
+interface Event {
+  id: number;
+  title: string;
+  organizer: string;
+  location: string;
+  description?: string;
+  requirements?: string;
+  link?: string;
+  
+  // Image fields
+  banner_image?: string;
+  logo_image?: string;
+  image_alt?: string;
+  
+  // Event-specific fields
+  event_type: string;
+  format?: string;
+  duration?: string;
+  
+  // Opportunity fields
+  benefits?: string;
+  eligibility?: string;
+  application_process?: string;
+  
+  // Dates
+  start_date?: string;
+  end_date?: string;
+  deadline?: string;
+  
+  // System fields
+  category: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
+  
+  // Computed fields
+  is_saved?: boolean;
+}
+
 interface AuthResponse {
   token: string;
   user: User;
@@ -68,6 +145,26 @@ interface JobsListResponse {
 
 interface CompaniesListResponse {
   companies: Company[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface ScholarshipsListResponse {
+  scholarships: Scholarship[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+interface EventsListResponse {
+  events: Event[];
   pagination: {
     page: number;
     limit: number;
@@ -386,6 +483,148 @@ class ApiClient {
     },
   };
 
+  // Scholarships API
+  scholarships = {
+    list: async (params: any = {}): Promise<ScholarshipsListResponse> => {
+      const searchParams = new URLSearchParams();
+      Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+          searchParams.append(key, params[key].toString());
+        }
+      });
+      
+      const queryString = searchParams.toString();
+      return this.request<ScholarshipsListResponse>(`/scholarships${queryString ? `?${queryString}` : ''}`);
+    },
+
+    get: async (params: { id: number }): Promise<Scholarship> => {
+      return this.request<Scholarship>(`/scholarships/${params.id}`);
+    },
+
+    create: async (data: any): Promise<Scholarship> => {
+      return this.request<Scholarship>('/scholarships', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    bulkCreate: async (data: { scholarships: any[] }): Promise<{ scholarships: Scholarship[] }> => {
+      return this.request<{ scholarships: Scholarship[] }>('/scholarships/bulk', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    update: async (id: number, data: any): Promise<Scholarship> => {
+      return this.request<Scholarship>(`/scholarships/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+
+    delete: async (id: number): Promise<{ success: boolean }> => {
+      return this.request<{ success: boolean }>(`/scholarships/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  };
+
+  // Events API
+  events = {
+    list: async (params: any = {}): Promise<EventsListResponse> => {
+      const searchParams = new URLSearchParams();
+      Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+          searchParams.append(key, params[key].toString());
+        }
+      });
+      
+      const queryString = searchParams.toString();
+      return this.request<EventsListResponse>(`/events${queryString ? `?${queryString}` : ''}`);
+    },
+
+    get: async (params: { id: number }): Promise<Event> => {
+      return this.request<Event>(`/events/${params.id}`);
+    },
+
+    create: async (data: any): Promise<Event> => {
+      return this.request<Event>('/events', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    bulkCreate: async (data: { events: any[] }): Promise<{ events: Event[] }> => {
+      return this.request<{ events: Event[] }>('/events/bulk', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    update: async (id: number, data: any): Promise<Event> => {
+      return this.request<Event>(`/events/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+
+    delete: async (id: number): Promise<{ success: boolean }> => {
+      return this.request<{ success: boolean }>(`/events/${id}`, {
+        method: 'DELETE',
+      });
+    },
+  };
+
+  // Saved Scholarships API
+  savedScholarships = {
+    list: async (params: { userId: number }) => {
+      return this.request(`/saved-scholarships/${params.userId}`);
+    },
+
+    save: async (params: { scholarshipId: number; userId: number }) => {
+      return this.request('/saved-scholarships', {
+        method: 'POST',
+        body: JSON.stringify(params),
+      });
+    },
+
+    unsave: async (params: { scholarshipId: number; userId: number }) => {
+      return this.request('/saved-scholarships', {
+        method: 'DELETE',
+        body: JSON.stringify(params),
+      });
+    },
+
+    check: async (params: { scholarshipId: number }) => {
+      return this.request(`/saved-scholarships/check/${params.scholarshipId}`);
+    },
+  };
+
+  // Saved Events API
+  savedEvents = {
+    list: async (params: { userId: number }) => {
+      return this.request(`/saved-events/${params.userId}`);
+    },
+
+    save: async (params: { eventId: number; userId: number }) => {
+      return this.request('/saved-events', {
+        method: 'POST',
+        body: JSON.stringify(params),
+      });
+    },
+
+    unsave: async (params: { eventId: number; userId: number }) => {
+      return this.request('/saved-events', {
+        method: 'DELETE',
+        body: JSON.stringify(params),
+      });
+    },
+
+    check: async (params: { eventId: number }) => {
+      return this.request(`/saved-events/check/${params.eventId}`);
+    },
+  };
+
   // Stats API
   stats = {
     get: async (): Promise<StatsResponse> => {
@@ -407,9 +646,13 @@ export type {
   Job,
   Company,
   User,
+  Scholarship,
+  Event,
   AuthResponse,
   JobsListResponse,
   CompaniesListResponse,
+  ScholarshipsListResponse,
+  EventsListResponse,
   StatsResponse,
   DashboardStatsResponse,
   ApiResponse
